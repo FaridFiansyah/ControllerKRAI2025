@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background utama hijau gradien -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="45"
+                android:startColor="#0f2d25"
+                android:endColor="#238a6a"
+                android:type="linear"
+                android:centerY="170%"
+                android:centerX="90%"
+                android:gradientRadius="300dp"/>
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+
+    <!-- Lingkaran pertama (kanan atas) -->
+<!--    <item android:right="5dp" android:top="10dp">-->
+<!--        <shape android:shape="oval">-->
+<!--            <solid android:color="#4026E6A9" />-->
+<!--            <size android:width="80dp" android:height="80dp" />-->
+<!--        </shape>-->
+<!--    </item>-->
+
+<!--    &lt;!&ndash; Lingkaran kedua (kiri bawah) &ndash;&gt;-->
+<!--    <item android:left="20dp" android:bottom="20dp">-->
+<!--        <shape android:shape="oval">-->
+<!--            <solid android:color="#4026E6A9" />-->
+<!--            <size android:width="80dp" android:height="80dp" />-->
+<!--        </shape>-->
+<!--    </item>-->
+</layer-list>

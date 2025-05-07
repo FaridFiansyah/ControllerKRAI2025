@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:id="@+id/controlsLayout"
+    android:fitsSystemWindows="false"
+    tools:context=".VirtualControllerActivity">
+
+    <!-- Minimal header with back button only, positioned to avoid notches -->
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_back"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="Back" />
+
+    <!-- Improved status text beside back button -->
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Ready - T 0 0 0"
+        android:textColor="#4CAF50"
+        android:gravity="center"
+        android:padding="6dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/status_background"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintEnd_toStartOf="@id/batteryLayout"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Updated Battery Layout with horizontal progress bar -->
+    <LinearLayout
+        android:id="@+id/batteryLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="@id/backButton"
+        app:layout_constraintBottom_toBottomOf="@id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/status_background"
+        android:padding="4dp">
+
+        <ProgressBar
+            android:id="@+id/battbarr"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="42dp"
+            android:layout_height="15dp"
+            android:max="100"
+            android:progress="50"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:id="@+id/battxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50%"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Centered Shoulder Buttons Row - FIXED TEXT VISIBILITY -->
+    <LinearLayout
+        android:id="@+id/shoulderButtonsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/backButton"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/buttonL1"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="L1"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/shoulder_button"
+            android:gravity="center"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/buttonL2"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="L2"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/shoulder_button"
+            android:gravity="center"
+            android:layout_marginEnd="20dp" />
+
+        <TextView
+            android:id="@+id/buttonR2"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="R2"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/shoulder_button"
+            android:gravity="center"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/buttonR1"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="R1"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/shoulder_button"
+            android:gravity="center"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Main Controls Container with spacing guidelines -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centerGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topControlsGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.17" />
+
+    <!-- Left Side Controls - Left Joystick with improved positioning -->
+    <com.example.basket.JoystickView
+        android:id="@+id/leftJoystick"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/centerGuideline"
+        app:layout_constraintHorizontal_bias="0.35"
+        app:layout_constraintTop_toTopOf="@id/topControlsGuideline"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <!-- Right Side Controls - Right Joystick with improved positioning -->
+    <com.example.basket.JoystickView
+        android:id="@+id/rightJoystick"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/centerGuideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintTop_toTopOf="@id/topControlsGuideline"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <!-- D-Pad - Positioned with vertical spacing from joystick -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dpadLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.18"
+        app:layout_constraintStart_toStartOf="@id/leftJoystick"
+        app:layout_constraintEnd_toEndOf="@id/leftJoystick"
+        app:layout_constraintTop_toBottomOf="@id/leftJoystick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp">
+
+        <ImageButton
+            android:id="@+id/dpadUp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/dpad_button"
+            android:src="@android:drawable/arrow_up_float" />
+
+        <ImageButton
+            android:id="@+id/dpadRight"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/dpad_button"
+            android:src="@android:drawable/arrow_up_float"
+            android:rotation="90" />
+
+        <ImageButton
+            android:id="@+id/dpadDown"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/dpad_button"
+            android:src="@android:drawable/arrow_up_float"
+            android:rotation="180" />
+
+        <ImageButton
+            android:id="@+id/dpadLeft"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/dpad_button"
+            android:src="@android:drawable/arrow_up_float"
+            android:rotation="270" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Action Buttons - FIXED TEXT VISIBILITY -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/actionButtonLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.18"
+        app:layout_constraintStart_toStartOf="@id/rightJoystick"
+        app:layout_constraintEnd_toEndOf="@id/rightJoystick"
+        app:layout_constraintTop_toBottomOf="@id/rightJoystick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp">
+
+        <TextView
+            android:id="@+id/buttonY"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/button_y"
+            android:text="Y"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/buttonB"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/button_b"
+            android:text="B"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/buttonA"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/button_a"
+            android:text="A"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/buttonX"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.33"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/button_x"
+            android:text="X"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#2196F3" /> <!-- Blue color for X button -->
+    <stroke android:color="#FFFFFF" android:width="2dp" />
+    <size android:width="60dp" android:height="60dp" />
+    <padding android:left="5dp" android:top="5dp" android:right="5dp" android:bottom="5dp" />
+</shape>
