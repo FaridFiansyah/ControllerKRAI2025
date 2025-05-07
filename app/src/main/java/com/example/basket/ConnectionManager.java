@@ -6,21 +6,17 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import org.zeromq.SocketType;
@@ -82,7 +78,7 @@ public class ConnectionManager {
 
         void onConnectionError(String error);
     }
-
+    //GATAU
     private ConnectionManager() {
         mainHandler = new Handler(Looper.getMainLooper());
     }
