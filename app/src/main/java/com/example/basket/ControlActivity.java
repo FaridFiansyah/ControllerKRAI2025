@@ -44,6 +44,7 @@ public class ControlActivity extends AppCompatActivity {
     private static final float courtHeight = 8000f;
     private int lastX = 0, lastY = 0;
     private boolean isControllerActive = false;
+    private boolean preset = false;
     private float dpadX, dpadY, leftStickX, leftStickY;
     private float rightStickX, rightStickY, leftTrigger, rightTrigger;
     private ImageView markerPoint;
@@ -55,6 +56,8 @@ public class ControlActivity extends AppCompatActivity {
     private ImageView lapangan;
     private Handler handler;
     private Runnable statusUpdateRunnable;
+    boolean wasJoystickMoving = true;
+    boolean wasDpadPressed = false;
     private Runnable dataUpdateRunnable;
     private Runnable batteryUpdateRunnable;
     private ProgressBar batteryBar;
@@ -437,46 +440,164 @@ public class ControlActivity extends AppCompatActivity {
                 }
             };
 
-            // Data update runnable - Modified to check active input source and implement continuous sending
+//             Data update runnable - Modified to check active input source and implement continuous sending
+//            dataUpdateRunnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        ConnectionManager connectionManager = ConnectionManager.getInstance();
+//                        // Only send data if we are the active input source
+//                        if (connectionManager != null &&
+//                                connectionManager.isInputSourceActive(ConnectionManager.INPUT_SOURCE_COURT)) {
+//
+//                            // Determine what to send based on active inputs
+//                            if (isSendingPosition && lastSentData != null) {
+//                                // If court coordinate is active, continuously send it
+//                                connectionManager.sendData(lastSentData);
+//                                lastDataSentTime = System.currentTimeMillis();
+//                            }
+//
+//                            else if (isButtonPressed && lastButtonCommand != null && !lastButtonCommand.isEmpty()) {
+//                                // If a button is pressed, send the button command
+//                                connectionManager.sendData(lastButtonCommand);
+////                                preset = true;
+////                                if (preset) {
+//////                                    // Idle state
+////                                    connectionManager.sendData("");
+////                                }
+//                                lastDataSentTime = System.currentTimeMillis();
+//
+//
+//                            } else if (isControllerActive) {
+//                                // If controller is active but no specific input, send "T 0 0 0"
+//                                if (leftStickX != 0 || leftStickY != 0 || rightStickX != 0) {
+//                                    // Joystick is moved
+//                                    String joystickCommand = String.format("T %.2f %.2f %.2f", leftStickX, flipy, rightStickX);
+//                                    connectionManager.sendData(joystickCommand);
+//                                }
+////                                }if (preset) {
+////                                    // Idle state
+////                                    connectionManager.sendData("");
+////                                }
+//                                else{
+//                                    connectionManager.sendData("T 0 0 0");
+//                                }
+//                                lastDataSentTime = System.currentTimeMillis();
+//                            }
+//                            else{
+//                                connectionManager.sendData("");
+//                            }
+//                        }
+//                        handler.postDelayed(this, DATA_UPDATE_INTERVAL);
+//                    } catch (Exception e) {
+//                        Log.e(TAG, "Error in data update: " + e.getMessage(), e);
+//                    }
+//                }
+//            };
+
             dataUpdateRunnable = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         ConnectionManager connectionManager = ConnectionManager.getInstance();
-                        // Only send data if we are the active input source
                         if (connectionManager != null &&
                                 connectionManager.isInputSourceActive(ConnectionManager.INPUT_SOURCE_COURT)) {
-
-                            // Determine what to send based on active inputs
                             if (isSendingPosition && lastSentData != null) {
-                                // If court coordinate is active, continuously send it
                                 connectionManager.sendData(lastSentData);
                                 lastDataSentTime = System.currentTimeMillis();
+
                             } else if (isButtonPressed && lastButtonCommand != null && !lastButtonCommand.isEmpty()) {
-                                // If a button is pressed, send the button command
+                                // D-Pad ditekan
                                 connectionManager.sendData(lastButtonCommand);
                                 lastDataSentTime = System.currentTimeMillis();
+                                wasDpadPressed = true;
+                                wasJoystickMoving = false;
+//                                isButtonPressed = false; // reset setelah dikirim sekali
+
                             } else if (isControllerActive) {
-                                // If controller is active but no specific input, send "T 0 0 0"
                                 if (leftStickX != 0 || leftStickY != 0 || rightStickX != 0) {
-                                    // Joystick is moved
                                     String joystickCommand = String.format("T %.2f %.2f %.2f", leftStickX, flipy, rightStickX);
                                     connectionManager.sendData(joystickCommand);
-                                } else {
-                                    // Idle state
-                                    connectionManager.sendData("T 0 0 0");
+                                    wasJoystickMoving = true;
+                                    wasDpadPressed = false;
+                                    lastDataSentTime = System.currentTimeMillis();
                                 }
-                                lastDataSentTime = System.currentTimeMillis();
-                            } else {
+                                else if (wasDpadPressed) {
+                                    connectionManager.sendData("");
+//                                wasDpadPressed = false;
+                                    lastDataSentTime = System.currentTimeMillis();
+                                }
+                                else {
+                                    if (wasJoystickMoving) {
+                                        connectionManager.sendData("T 0 0 0");
+//                                        wasJoystickMoving = false;
+                                        lastDataSentTime = System.currentTimeMillis();
+                                    }
+                                }
+                            }
+
+                            else {
                                 connectionManager.sendData("T 0 0 0");
+                                lastDataSentTime = System.currentTimeMillis();
                             }
                         }
+
                         handler.postDelayed(this, DATA_UPDATE_INTERVAL);
+
                     } catch (Exception e) {
                         Log.e(TAG, "Error in data update: " + e.getMessage(), e);
                     }
                 }
             };
+
+
+//            dataUpdateRunnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        ConnectionManager connectionManager = ConnectionManager.getInstance();
+//                        if (connectionManager != null &&
+//                                connectionManager.isInputSourceActive(ConnectionManager.INPUT_SOURCE_COURT)) {
+//
+//                            if (preset) {
+//                                if (!hasSentPresetCommand && lastButtonCommand != null && !lastButtonCommand.isEmpty()) {
+//                                    connectionManager.sendData(lastButtonCommand); // Kirim command preset sekali
+//                                    hasSentPresetCommand = true;
+//                                } else {
+//                                    connectionManager.sendData(""); // Kirim kosong setelah preset command terkirim
+//                                }
+//                            }
+//                            else if (isSendingPosition && lastSentData != null) {
+//                                connectionManager.sendData(lastSentData);
+//                                lastDataSentTime = System.currentTimeMillis();
+//                                hasSentPresetCommand = false; // Reset flag saat keluar dari preset
+//                            }
+//                            else if (isButtonPressed && lastButtonCommand != null && !lastButtonCommand.isEmpty()) {
+//                                connectionManager.sendData(lastButtonCommand);
+//                                lastDataSentTime = System.currentTimeMillis();
+//                                hasSentPresetCommand = false;
+//                            }
+//                            else if (isControllerActive) {
+//                                if (leftStickX != 0 || leftStickY != 0 || rightStickX != 0) {
+//                                    String joystickCommand = String.format("T %.2f %.2f %.2f", leftStickX, flipy, rightStickX);
+//                                    connectionManager.sendData(joystickCommand);
+//                                } else {
+//                                    connectionManager.sendData("T 0 0 0");
+//                                }
+//                                lastDataSentTime = System.currentTimeMillis();
+//                                hasSentPresetCommand = false;
+//                            }
+//                            else {
+//                                connectionManager.sendData("T 0 0 0");
+//                                hasSentPresetCommand = false;
+//                            }
+//                        }
+//                        handler.postDelayed(this, DATA_UPDATE_INTERVAL);
+//                    } catch (Exception e) {
+//                        Log.e(TAG, "Error in data update: " + e.getMessage(), e);
+//                    }
+//                }
+//            };
 
             // Battery update runnable
             batteryUpdateRunnable = new Runnable() {
@@ -578,23 +699,23 @@ public class ControlActivity extends AppCompatActivity {
                     Log.e(TAG, "Error joining previous receiver thread", e);
                 }
             }
-            
+
             // Reset flag for new thread
             isReceivingData.set(true);
-            
+
             // Close any existing ZMQ resources before creating new ones
             closeZmqResources();
-            
+
             dataReceiverThread = new Thread(() -> {
                 try {
                     Log.d(TAG, "Starting ZMQ battery receiver thread");
                     context = new ZContext();
                     pullSocket = context.createSocket(ZMQ.PULL);
-                    
+
                     // Set socket options for better error handling
                     pullSocket.setReceiveTimeOut(1000);  // 1 second timeout
                     pullSocket.setLinger(0);  // Don't block on close
-                    
+
                     pullSocket.connect(address);
                     Log.d(TAG, "ZMQ connected to: " + address);
 
@@ -602,7 +723,7 @@ public class ControlActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     final String errorMsg = e.getMessage();
                     Log.e(TAG, "Error setting up ZMQ: " + errorMsg, e);
-                    runOnUiThread(() -> 
+                    runOnUiThread(() ->
                         Toast.makeText(ControlActivity.this, "Gagal koneksi: " + errorMsg, Toast.LENGTH_SHORT).show()
                     );
                 } finally {
@@ -695,7 +816,7 @@ public class ControlActivity extends AppCompatActivity {
                 Log.w(TAG, "Invalid battery level: " + level);
                 return;
             }
-            
+
             // Set progress bar color based on battery level
             final int color;
             if (level < 20) {
@@ -715,7 +836,7 @@ public class ControlActivity extends AppCompatActivity {
                         }
                         batteryBar.setProgress(level);
                     }
-                    
+
                     if (batteryText != null) {
                         batteryText.setText(level + "%");
                     }
@@ -843,8 +964,16 @@ public class ControlActivity extends AppCompatActivity {
                                 isButtonPressed = false;
                                 isControllerActive = false;
 
-                                float x = event.getX() / lapangan.getWidth() * courtWidth;
-                                float y = event.getY() / lapangan.getHeight() * courtHeight;
+//                                kuadran 2
+                                float transformedX = lapangan.getWidth() - event.getX();
+                                float transformedY = lapangan.getHeight() - event.getY();
+
+                                float x = transformedX / lapangan.getWidth() * courtWidth;
+                                float y = transformedY / lapangan.getHeight() * courtHeight;
+//
+//                                kuadran 4
+//                                float x = event.getX() / lapangan.getWidth() * courtWidth;
+//                                float y = event.getY() / lapangan.getHeight() * courtHeight;
 
                                 x = Math.max(0, Math.min(x, courtWidth));
                                 y = Math.max(0, Math.min(y, courtHeight));
@@ -878,8 +1007,8 @@ public class ControlActivity extends AppCompatActivity {
     private void updateMarkerPosition(float x, float y) {
         try {
             if (markerPoint != null) {
-                int screenX = (int) (x / scaleX) - (markerPoint.getWidth() / 2);
-                int screenY = (int) (y / scaleY) - (markerPoint.getHeight() / 2);
+                int screenX = (int) ((courtWidth - x) / scaleX) - (markerPoint.getWidth() / 2);
+                int screenY = (int) ((courtHeight - y) / scaleY) - (markerPoint.getHeight() / 2);
                 markerPoint.setX(screenX);
                 markerPoint.setY(screenY);
                 markerPoint.setVisibility(View.VISIBLE);
@@ -1129,7 +1258,7 @@ public class ControlActivity extends AppCompatActivity {
 
                     // Handle D-pad input
                     handleDpadInput();
-                    Toast.makeText(this, "joystick" + leftStickX, Toast.LENGTH_SHORT).show();
+
 
                     // Update stick values
                     flipy = -leftStickY;
@@ -1137,7 +1266,9 @@ public class ControlActivity extends AppCompatActivity {
                     // No need to set lastSentData here, we'll send in the runnable with live joystick values
                 }
                 return true;
+
             }
+
         } catch (Exception e) {
             Log.e(TAG, "Error in onGenericMotionEvent: " + e.getMessage(), e);
         }
@@ -1151,6 +1282,7 @@ public class ControlActivity extends AppCompatActivity {
                 String direction = "";
                 if (dpadX == 1) {
                     direction = "RT";
+                    preset = true;
                 } else if (dpadX == -1) {
                     direction = "LT";
                 } else if (dpadY == 1) {
@@ -1196,7 +1328,7 @@ public class ControlActivity extends AppCompatActivity {
     protected void onDestroy() {
         try {
             Log.d(TAG, "ControlActivity onDestroy started");
-            
+
             // Stop receiving data first
             isReceivingData.set(false);
 

@@ -78,7 +78,7 @@ public class ConnectionManager {
 
         void onConnectionError(String error);
     }
-    //GATAU
+
     private ConnectionManager() {
         mainHandler = new Handler(Looper.getMainLooper());
     }

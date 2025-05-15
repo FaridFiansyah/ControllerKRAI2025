@@ -561,7 +561,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionManager
             // Set warna teks untuk tombol positif dan negatif
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE);
-
             // Make sure dialog is also fullscreen and respects cutouts
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && dialog.getWindow() != null) {
                 WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
