@@ -1,7 +1,6 @@
 package com.example.basket;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -211,6 +210,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onDestroy();
         if (videoView != null) {
             videoView.stopPlayback();
+            videoView.suspend();
         }
     }
 }

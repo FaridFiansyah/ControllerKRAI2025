@@ -5,14 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,33 +29,25 @@ public class VirtualControllerActivity extends AppCompatActivity {
     private TextView buttonL1, buttonR1, buttonL2, buttonR2;
     private ImageButton dpadUp, dpadDown, dpadLeft, dpadRight;
     private TextView statusText;
-    private ProgressBar batteryProgressBar;
-    private TextView batteryText;
 
     // Controller values
-    private float leftStickX = 0f, leftStickY = 0f, rightStickX = 0f;
+    private volatile float leftStickX = 0f, leftStickY = 0f, rightStickX = 0f;
     private boolean isButtonPressed = false;
     private String lastPressedButton = "";
 
     // Flag for active input
     private boolean isAnyInputActive = false;
-
-    // Battery update handler
-    private Handler batteryHandler;
-    private Runnable batteryUpdateRunnable;
-    private static final int BATTERY_UPDATE_INTERVAL = 700; // Same as ControlActivity (700ms)
+// Same as ControlActivity (700ms)
 
     // Update handler
     private Handler handler;
     private Runnable continuousDataRunnable;
     private static final int DATA_UPDATE_INTERVAL = 50; // milliseconds
 
-    // ZMQ battery communication
     private ZContext context;
     private ZMQ.Socket pullSocket;
     private Thread dataReceiverThread;
     private AtomicBoolean isReceivingData = new AtomicBoolean(true);
-    private volatile int batre = 0; // Initialize to 0 instead of uninitialized
     private int last_data = -1; // Set to -1 to force first update
 
     @Override
@@ -65,7 +55,6 @@ public class VirtualControllerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_virtual_controller);
 
-        // Set this activity as the active input source when created
         ConnectionManager connectionManager = ConnectionManager.getInstance();
         if (connectionManager != null) {
             connectionManager.setActiveInputSource(ConnectionManager.INPUT_SOURCE_VIRTUAL);
@@ -76,8 +65,6 @@ public class VirtualControllerActivity extends AppCompatActivity {
         setupJoysticks();
         startContinuousDataTransmission();
 
-        // Setup battery updates using ZMQ instead of device battery
-        setupBatteryUpdates();
     }
 
     @Override
@@ -132,10 +119,6 @@ public class VirtualControllerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        // Cancel battery update handler
-        if (batteryHandler != null) {
-            batteryHandler.removeCallbacks(batteryUpdateRunnable);
-        }
 
         // Clean up ZMQ resources
         isReceivingData.set(false);
@@ -217,10 +200,6 @@ public class VirtualControllerActivity extends AppCompatActivity {
             statusText = findViewById(R.id.statusText);
             // Update initial status text
             statusText.setText("Ready - T 0 0 0");
-
-            // Battery components
-            batteryProgressBar = findViewById(R.id.battbarr);
-            batteryText = findViewById(R.id.battxt);
 
             // Back button
             ImageButton backButton = findViewById(R.id.backButton);
@@ -466,148 +445,4 @@ public class VirtualControllerActivity extends AppCompatActivity {
         }
     }
 
-    private void setupBatteryUpdates() {
-        // Setup ZMQ connection for battery data
-        try {
-            // Get the address from SharedPreferences
-            SharedPreferences kirim = getSharedPreferences("app_kirim", MODE_PRIVATE);
-            String address = kirim.getString("addres", "");
-            if (!address.isEmpty()) {
-                updateBattery(address);
-            } else {
-                Log.w(TAG, "ZMQ address is empty");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error setting up ZMQ for battery: " + e.getMessage(), e);
-        }
-
-        // Set initial battery UI to 0%
-        if (batteryProgressBar != null) {
-            batteryProgressBar.setProgress(0);
-        }
-        if (batteryText != null) {
-            batteryText.setText("0%");
-        }
-
-        // Setup periodic battery updates - using same interval as ControlActivity
-        batteryHandler = new Handler(Looper.getMainLooper());
-        batteryUpdateRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateBatteryStatus();
-                batteryHandler.postDelayed(this, BATTERY_UPDATE_INTERVAL); // Same interval as in ControlActivity
-            }
-        };
-        batteryHandler.post(batteryUpdateRunnable);
-    }
-
-    public void updateBattery(String address) {
-        try {
-            dataReceiverThread = new Thread(() -> {
-                try {
-                    context = new ZContext();
-                    pullSocket = context.createSocket(ZMQ.PULL);
-                    pullSocket.connect(address);
-
-                    receiveData();
-                } catch (Exception e) {
-                    final String errorMsg = e.getMessage();
-                    runOnUiThread(() ->
-                            Toast.makeText(VirtualControllerActivity.this, "Gagal koneksi: " + errorMsg, Toast.LENGTH_SHORT).show()
-                    );
-                    Log.e(TAG, "Error setting up ZMQ: " + e.getMessage(), e);
-                }
-            });
-            dataReceiverThread.start();
-        } catch (Exception e) {
-            Log.e(TAG, "Error starting battery update thread: " + e.getMessage(), e);
-        }
-    }
-
-    private void receiveData() {
-        try {
-            while (isReceivingData.get() && !Thread.currentThread().isInterrupted()) {
-                try {
-                    // Use a timeout to make the receive operation interruptible
-                    byte[] message = pullSocket.recv(ZMQ.DONTWAIT);
-                    if (message != null) {
-                        String receivedText = new String(message, ZMQ.CHARSET);
-                        Log.d(TAG, "RECEIVE: " + receivedText);
-                        try {
-                            int newBattery = Integer.parseInt(receivedText);
-                            // Only update if the battery value is valid (0-100%)
-                            if (newBattery >= 0 && newBattery <= 100) {
-                                batre = newBattery;
-                                Log.d(TAG, "Battery value updated to: " + batre);
-                            } else {
-                                Log.w(TAG, "Invalid battery percentage received: " + newBattery);
-                            }
-                        } catch (NumberFormatException e) {
-                            Log.e(TAG, "Invalid battery value received: " + receivedText, e);
-                        }
-                    }
-                    // Small sleep to prevent busy waiting
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                } catch (Exception e) {
-                    Log.e(TAG, "Error receiving data: " + e.getMessage(), e);
-                    // Add a small delay to prevent tight loop on error
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Fatal error in receive data thread: " + e.getMessage(), e);
-        }
-    }
-
-    private void updateBatteryStatus() {
-        try {
-            // Use the battery level received from ZMQ
-            int batteryPct = batre;
-
-            // Check if valid data was received or if data changed
-            if (batteryPct >= 0 && last_data != batteryPct) {
-                // Update UI on main thread
-                runOnUiThread(() -> {
-                    if (batteryProgressBar != null) {
-                        batteryProgressBar.setProgress(batteryPct);
-
-                        // Change color based on level - matching ControlActivity logic
-                        int color;
-                        if (batteryPct > 50) {
-                            color = getResources().getColor(R.color.high_color);
-                        } else if (batteryPct > 20) {
-                            color = getResources().getColor(R.color.med_color);
-                        } else {
-                            color = getResources().getColor(R.color.low_color);
-                        }
-
-                        // Set progress bar color if supported - same as ControlActivity
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            batteryProgressBar.setProgressTintList(android.content.res.ColorStateList.valueOf(color));
-                        }
-                    }
-
-                    if (batteryText != null) {
-                        batteryText.setText(batteryPct + "%");
-                    }
-                });
-                
-                // Log that we updated the battery display
-                Log.d(TAG, "Battery updated to: " + batteryPct + "%");
-            }
-
-            // Store current level for next comparison
-            last_data = batteryPct;
-        } catch (Exception e) {
-            Log.e(TAG, "Error updating battery status: " + e.getMessage(), e);
-        }
-    }
 }

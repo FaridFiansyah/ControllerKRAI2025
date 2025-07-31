@@ -105,7 +105,6 @@
                 app:iconGravity="textStart"
                 app:iconPadding="45dp"
                 app:iconTint="@color/white" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -153,7 +152,6 @@
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -179,7 +177,7 @@
                 app:icon="@drawable/gamepad_baru"
                 app:iconGravity="textStart"
                 app:iconPadding="10dp"
-                app:iconSize="25dp" />/>
+                app:iconSize="25dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonPreset"
@@ -197,9 +195,7 @@
                 app:icon="@drawable/baseline_hamburger"
                 app:iconGravity="textStart"
                 app:iconPadding="10dp" />
-
         </LinearLayout>
-
     </LinearLayout>
 
 

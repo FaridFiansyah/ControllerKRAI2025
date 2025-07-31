@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionManager
     // Shared Preferences
     private SharedPreferences kirim;
     private SharedPreferences prefs;
-    private ArrayList<Preset> presets = new ArrayList<>();
+    private final ArrayList<Preset> presets = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,6 +260,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionManager
         if (zContext != null) {
             zContext.close();
         }
+        if (zmqSocket != null) {
+            try {
+                zmqSocket.close();
+            } catch (Exception e) {
+                Log.e(TAG, "Error closing ZMQ socket: " + e.getMessage());
+            }
+        }
         currentZmqAddress = address;
         zContext = new ZContext();
         zmqSocket = zContext.createSocket(SocketType.PUSH);
@@ -350,6 +357,12 @@ public class MainActivity extends AppCompatActivity implements ConnectionManager
     }
 
     private void handleControl() {
+        if(bluetoothAdapter != null || wifiManager.isWifiEnabled()){
+            if (ConnectionManager.getInstance().isAnyConnectionActive()) {
+                Intent intent = new Intent(MainActivity.this, ControlActivity.class);
+                startActivity(intent);
+            }
+        }
         if(bluetoothAdapter != null && wifiManager.isWifiEnabled()){
             if (ConnectionManager.getInstance().isAnyConnectionActive()) {
                 Intent intent = new Intent(MainActivity.this, ControlActivity.class);

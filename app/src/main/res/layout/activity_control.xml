@@ -25,6 +25,129 @@
             android:scaleType="fitXY"
             android:src="@drawable/lapanganrevisi" />
 
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter" />
+
+        <com.example.basket.DialView
+            android:id="@+id/dial_view"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="top" />
+
+        <!-- LinearLayout vertikal untuk button -->
+        <LinearLayout
+            android:id="@+id/buttonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Button 1 group -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="195dp">
+
+                <ImageButton
+                    android:id="@+id/buton1"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/pr1" />
+
+                <TextView
+                    android:id="@+id/tpr1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="P4"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+            </FrameLayout>
+
+            <!-- Button 2 group -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp">
+
+                <ImageButton
+                    android:id="@+id/buton2"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/pr2" />
+
+                <TextView
+                    android:id="@+id/tpr2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="P3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+            </FrameLayout>
+
+            <!-- Button 3 group -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp">
+
+                <ImageButton
+                    android:id="@+id/buton3"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/pr4" />
+
+                <TextView
+                    android:id="@+id/tpr3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="P2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+            </FrameLayout>
+
+            <!-- Button 4 group -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp">
+
+                <ImageButton
+                    android:id="@+id/buton4"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/button_a" />
+
+                <TextView
+                    android:id="@+id/tpr4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="P1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+
     </FrameLayout>
 
     <TextView
@@ -74,104 +197,85 @@
         app:layout_constraintTop_toBottomOf="@id/backButton"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <ProgressBar
-        android:id="@+id/battbarr"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="84dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="22dp"
-        android:max="100"
-        android:progress="0"
-        android:rotation="270"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toEndOf="@+id/courtContainer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.179" />
-
     <TextView
-        android:id="@+id/battxt"
+        android:id="@+id/textangle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="18dp"
-        android:text="00"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="8dp"
+        android:text="Angle : 34"
         android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/textrpm"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/courtContainer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.177" />
-
-    <ImageButton
-        android:id="@+id/rstbutton"
-        android:layout_width="49dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="12dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_reload"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/courtContainer"
-        app:layout_constraintTop_toBottomOf="@id/battbarr" />
-
-    <EditText
-        android:id="@+id/manualx"
-        android:layout_width="30dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/white"
-        android:fontFamily="@font/quicksand_bold"
-        android:hint=" X"
-        android:inputType="text"
-        android:textColor="@color/white"
-        android:textColorHint="#CCFFFFFF"
-        android:textCursorDrawable="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/virtualControllerButton" />
-
-    <EditText
-        android:id="@+id/manualy"
-        android:layout_width="30dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/white"
-        android:fontFamily="@font/quicksand_bold"
-        android:hint=" Y"
-        android:inputType="text"
-        android:textColor="@color/white"
-        android:textColorHint="#CCFFFFFF"
-        android:textCursorDrawable="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/manualx" />
-
-    <ImageButton
-        android:id="@+id/buttonmanual"
-        android:layout_width="41dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="12dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/manualy"
-        app:srcCompat="@drawable/button_a" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="20dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="17dp"
-        android:text="M"
-        android:textColor="#FFFFFF"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/manualy" />
+        android:id="@+id/textrpm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="15dp"
+        android:text="RPM : 1000"
+        android:textColor="@color/white"
+        android:textSize="9dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonmode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/courtContainer"
+        app:layout_constraintTop_toBottomOf="@+id/textangle" />
+
+    <ImageButton
+        android:id="@+id/buttonmode"
+        android:layout_width="41dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="160dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/courtContainer"
+        app:layout_constraintTop_toBottomOf="@+id/textrpm"
+        app:srcCompat="@drawable/baseline_flip_camera" />
+
+    <!--    <ProgressBar-->
+<!--        android:id="@+id/battbarr"-->
+<!--        style="@android:style/Widget.ProgressBar.Horizontal"-->
+<!--        android:layout_width="84dp"-->
+<!--        android:layout_height="37dp"-->
+<!--        android:layout_marginStart="22dp"-->
+<!--        android:max="100"-->
+<!--        android:progress="0"-->
+<!--        android:rotation="270"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.75"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/courtContainer"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.179" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/battxt"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="4dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:text="22,70 V"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="10dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/battbarr"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.666"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/battbarr"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/battbarr"-->
+<!--        app:layout_constraintVertical_bias="0.652" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

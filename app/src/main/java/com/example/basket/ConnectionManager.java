@@ -70,9 +70,6 @@ public class ConnectionManager {
     // Connection state listener
     private ConnectionStateListener connectionStateListener;
 
-    // Battery tracking variable
-    private volatile int batre;
-
     public interface ConnectionStateListener {
         void onConnectionStateChanged(boolean isZmqConnected, boolean isBluetoothConnected);
 
@@ -94,13 +91,6 @@ public class ConnectionManager {
         return instance;
     }
 
-    /**
-     * Gets the current battery level
-     * @return current battery level (0-100)
-     */
-    public int getBatteryLevel() {
-        return batre;
-    }
 
     // NEW: Methods to control active input source
     public void setActiveInputSource(int source) {
@@ -146,6 +136,7 @@ public class ConnectionManager {
     public void setConnectionStateListener(ConnectionStateListener listener) {
         this.connectionStateListener = listener;
     }
+
     Queue<String> failedMessages = new LinkedList<>();
     public void sendData(String message) {
         // Send via ZMQ if connected
@@ -170,11 +161,11 @@ public class ConnectionManager {
             }
         }
 
-        // Send via Bluetooth if connected
+        //koneksi bluetooth
         if (isBluetoothConnected && bluetoothOutputStream != null) {
             try {
-                // Add the delimiter for Bluetooth messages
-                String bluetoothMessage = message + "|";
+//                String bluetoothMessage = message + "|";
+                String bluetoothMessage = "!"+message+"\n";
                 bluetoothOutputStream.write(bluetoothMessage.getBytes());
                 bluetoothOutputStream.flush();
                 Log.d(TAG, "Sent via Bluetooth: " + bluetoothMessage);
@@ -194,7 +185,7 @@ public class ConnectionManager {
 
     public void rekonek(){
         if (zmqReconnectThread != null && zmqReconnectThread.isAlive()) {
-
+            return;
         }
         else {
             startZmqReconnectThread(currentZmqAddress);
@@ -329,13 +320,15 @@ public class ConnectionManager {
                 bluetoothSocket.connect();
                 bluetoothOutputStream = bluetoothSocket.getOutputStream();
 
-                isBluetoothConnected = true;
+
                 bluetoothReconnectAttempts = 0;
 
                 mainHandler.post(() -> {
                     showToast("Bluetooth Connected");
                     notifyConnectionStateChanged();
                 });
+
+                isBluetoothConnected = true;
             }
         } catch (SecurityException e) {
             Log.e(TAG, "Security exception: " + e.getMessage());
@@ -394,15 +387,7 @@ public class ConnectionManager {
         return isZmqConnected;
     }
 
-    /**
-     * Set the battery level value
-     * @param level Battery level (0-100)
-     */
-    public void setBatteryLevel(int level) {
-        if (level >= 0 && level <= 100) {
-            this.batre = level;
-        }
-    }
+
 
     private void notifyConnectionStateChanged() {
         if (connectionStateListener != null) {
@@ -475,8 +460,11 @@ public class ConnectionManager {
             } catch (IOException e) {
                 Log.e(TAG, "Error closing Bluetooth socket: " + e.getMessage());
             }
-            bluetoothSocket = null;
-            bluetoothOutputStream = null;
+            finally {
+                bluetoothSocket = null;
+                bluetoothOutputStream = null;
+            }
+
         }
 
 

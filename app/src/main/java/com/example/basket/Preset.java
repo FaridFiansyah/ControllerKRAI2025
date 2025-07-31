@@ -58,7 +58,6 @@ public class Preset {
 
     @Override
     public String toString() {
-        // Perbaikan: menambahkan port2 dalam format string
         return name + "," + ipAddress + "," + port + "," + port2 + "," + macAddress;
     }
 
